@@ -3,6 +3,7 @@ int giallo;
 int bianco;
 int verde;
 int TempoAccensione;
+int CicliProgramma;
 void setup() {
   // put your setup code here, to run once:
   rosso = 13;
@@ -17,19 +18,23 @@ void setup() {
 
   Serial.begin(9600);
 
-  RichiestaTempo("Quanti secondi stanno accesi i led?");
-  TempoAccensione = TempoAccensione*1000;
+  RichiestaTempo("Dopo quanti cicli il programma ricomincia?");
+  TempoAccensione = random(5000);
+  
 }
 void loop() {
   // put your main code here, to run repeatedly:
+  for (int a = 0; a < CicliProgramma; a++)
+  {
   AccensioneRosso();
   AccensioneGiallo();
   AccensioneBianco();
   AccensioneVerde();
+  }
+  setup();
 }
 void AccensioneRosso()
 {
-  digitalWrite(verde, LOW);
   digitalWrite(rosso, HIGH);
   delay(TempoAccensione);
 }
@@ -50,10 +55,11 @@ void AccensioneVerde()
   digitalWrite(bianco, LOW);
   digitalWrite(verde, HIGH);
   delay(TempoAccensione);
+  digitalWrite(verde, LOW);
 }
 void RichiestaTempo(String frase)
 {
   Serial.println(frase);
   while (Serial.available() == 0) {}
-  TempoAccensione = Serial.readString().toInt();
+  CicliProgramma = Serial.readString().toInt();
 }
